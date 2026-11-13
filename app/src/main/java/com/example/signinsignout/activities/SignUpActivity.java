@@ -45,19 +45,20 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
-//        setContentView(R.layout.activity_sign_up);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
+        //set up binding
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         setListeners();
     }
 
+    /**
+     * add function to sign in, sign up and image
+     * sign in - sends user back to sign in page
+     * sign up - sends user account details to firebase if valid and display toast message
+     * image - allows user to choose image from photo downloads for account
+     */
     private void setListeners() {
         binding.textSignIn.setOnClickListener(
                 v -> onBackPressed());
@@ -65,6 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
         binding.buttonSignUp.setOnClickListener(v -> {
             if(isValidateSignUpDetails()){
                 SignUp();
+                showToast("Sign Up Successful");
             }
         });
 
@@ -75,11 +77,17 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * set up toast to display message
+     * @param message message to be displayed
+     */
     private void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-    
+
+    /**
+     * send account details to firebase as a user hashmap and display message if it fails
+     */
     private void SignUp(){
         //check loading
         loading(true);
@@ -107,6 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 
+
                 }).addOnFailureListener(exception ->{
                     loading(false);
                     showToast(exception.getMessage());
@@ -114,6 +123,11 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * encode image into a string to be stored in firebase
+     * @param bitmap image
+     * @return image as string
+     */
     private String encodeImage(Bitmap bitmap){
         int previewWidth = 150;
         int previewHeight = bitmap.getHeight()*previewWidth / bitmap.getWidth();
@@ -127,6 +141,9 @@ public class SignUpActivity extends AppCompatActivity {
         return Base64.encodeToString(bytes,Base64.DEFAULT);
     }
 
+    /**
+     * take image string as stored in firebase and view
+     */
     private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result ->{
@@ -147,7 +164,11 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
     );
-    
+
+    /**
+     * make sure each field is filled and correct, send error message if not
+     * @return boolean
+     */
     private Boolean isValidateSignUpDetails(){
         if (encodeImage == null){
             showToast("Please Select An Image");
@@ -180,6 +201,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * set isLoading to true or false and adjust button and progress bar
+     * @param isLoading
+     */
     private void loading (Boolean isLoading) {
         if(isLoading){
             binding.buttonSignUp.setVisibility(View.INVISIBLE);
@@ -189,6 +214,5 @@ public class SignUpActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
     }
-
 
 }

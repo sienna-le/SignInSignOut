@@ -3,6 +3,8 @@ package com.example.signinsignout.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+//set up preferences for app
+
 public class PreferenceManager {
     private final SharedPreferences sharedPreferences;
 

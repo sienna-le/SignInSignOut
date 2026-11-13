@@ -1,5 +1,5 @@
 package com.example.signinsignout.utilities;
-
+//constants used to refer to each aspect of account
 public class Constants {
     public static final String KEY_COLLECTION_USERS = "user";
     public static final String KEY_FIRST_NAME = "firstName";

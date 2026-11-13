@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 public class SignInActivity extends AppCompatActivity {
 
+    //initialize preferences and binding
     private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
 
@@ -30,12 +31,21 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //set up binding
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //set up preferences
         preferenceManager = new PreferenceManager(getApplicationContext());
+
         setListeners();
     }
 
+    /**
+     * allow sign up and sign in buttons to function
+     * sign up - sends to create account sign up page
+     * sign in - sends to main activity page when sign in is successful
+     */
     private void setListeners() {
         binding.textCreateNewAccount.setOnClickListener(v ->
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class)));
@@ -45,10 +55,19 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * method to set up toast
+     * @param message message to be displayed through toast
+     */
     private void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * sign in user after making sure there is a valid email and password input according to
+     * user account details stored in firebase, displays toast message on success or failure
+     */
     private void SignIn() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -78,6 +97,11 @@ public class SignInActivity extends AppCompatActivity {
                 });
 
     }
+
+    /**
+     * set isLoading to true or false and adjust button and progress bar
+     * @param isLoading
+     */
     private void loading (Boolean isLoading) {
         if(isLoading){
             binding.buttonSignIn.setVisibility(View.INVISIBLE);
@@ -87,6 +111,11 @@ public class SignInActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
     }
+
+    /**
+     * checks to make sure all information boxes have valid inputs, displays toast message when invalid
+     * @return boolean
+     */
     private boolean isValidateSignUpDetails() {
         if (binding.inputEmail.getText().toString().trim().isEmpty()) {
             showToast("Please Enter Your Email");
